@@ -134,6 +134,7 @@ For details on affected software, see the next section, Affected Software.
   <tr>
    <td><b>CVE ID</b></td>
    <td><b>Vulnerability Title</b></td>
+   <td><b>Customer Action Required</b></td>
    <td><b>Exploitability Assessment for Latest Software Release</b></td>
    <td><b>Exploitability Assessment for Older Software Release</b></td>
    <td><b>Denial of Service Exploitability Assessment</b></td>
@@ -270,6 +271,7 @@ damages so the foregoing limitation may not apply.</p>
      <td>{2}</td>
      <td>{3}</td>
      <td>{4}</td>
+     <td>{5}</td>
  </tr>
 '@
 
@@ -335,6 +337,7 @@ Process {
         $exploitabilityIndexTableHtml += $exploitabilityRowTemplate -f @(
             $_.CVE #TODO - make this an href
             $_.Title
+            $_.'Customer Action Required'
             $_.LatestSoftwareRelease
             $_.OlderSoftwareRelease
             'N/A' # was $ExploitStatus.DenialOfService
