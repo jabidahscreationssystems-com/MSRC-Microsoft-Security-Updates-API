@@ -1,0 +1,111 @@
+name: PowerShell CI
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: PowerShell Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install PSScriptAnalyzer
+      shell: pwsh
+      run: |
+        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
+
+    - name: Run PSScriptAnalyzer
+      shell: pwsh
+      run: |
+        $results = Invoke-ScriptAnalyzer -Path ./src -Recurse -ReportSummary
+        $results | Format-Table -AutoSize
+        if ($results) {
+          Write-Host "##[error]PSScriptAnalyzer found issues. Please review and fix."
+          # Uncomment to fail on warnings (recommended for production)
+          # exit 1
+        }
+
+    - name: Install Pester
+      shell: pwsh
+      run: |
+        Install-Module -Name Pester -Force -Scope CurrentUser -SkipPublisherCheck -MinimumVersion 5.0.0
+
+    - name: Run Pester Tests
+      shell: pwsh
+      run: |
+        $config = New-PesterConfiguration
+        $config.Run.Path = './src'
+        $config.Run.Exit = $true
+        $config.Output.Verbosity = 'Detailed'
+        $config.CodeCoverage.Enabled = $true
+        $config.CodeCoverage.Path = './src/MsrcSecurityUpdates/*.psm1'
+        $config.TestResult.Enabled = $true
+        $config.TestResult.OutputFormat = 'NUnitXml'
+        $config.TestResult.OutputPath = 'testResults.xml'
+        Invoke-Pester -Configuration $config
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-${{ matrix.os }}
+        path: testResults.xml
+
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      if: always() && runner.os == 'Linux'
+      with:
+        files: testResults.xml
+        check_name: PowerShell Test Results (${{ matrix.os }})
+
+  lint:
+    name: PowerShell Linting
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install PSScriptAnalyzer
+      shell: pwsh
+      run: |
+        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
+
+    - name: Lint PowerShell Module
+      shell: pwsh
+      run: |
+        $results = Invoke-ScriptAnalyzer -Path ./src/MsrcSecurityUpdates -Recurse -Settings PSGallery
+        $results | Format-Table -AutoSize
+        if ($results | Where-Object Severity -eq 'Error') {
+          Write-Host "##[error]PSScriptAnalyzer found errors."
+          exit 1
+        }
+
+  module-validation:
+    name: Module Validation
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Test Module Manifest
+      shell: pwsh
+      run: |
+        $manifestPath = './src/MsrcSecurityUpdates/MsrcSecurityUpdates.psd1'
+        Test-ModuleManifest -Path $manifestPath -Verbose
+        Import-Module $manifestPath -Force
+        Get-Command -Module MsrcSecurityUpdates | Format-Table -AutoSize

@@ -8,6 +8,12 @@ This repository contains sample code and documentation for the Microsoft Securit
 * sample code for using the [MsrcSecurityUpdates PowerShell module](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)
 * [OpenAPI/Swagger definition](docs) for the Microsoft Security Updates CVRF API
 
+## 🚀 Quick Links
+* **[Quick Start Guide](docs/QUICK_START.md)** - Get started with GitHub integrations in 5 minutes
+* **[GitHub Marketplace Recommendations](GITHUB_MARKETPLACE_RECOMMENDATIONS.md)** - Comprehensive integration recommendations
+* **[Implementation Guide](docs/IMPLEMENTATION_GUIDE.md)** - Step-by-step setup instructions
+* **[Postman Collection](docs/postman-collection.json)** - API testing collection
+
 # Getting the MsrcSecurityUpdates PowerShell Module
 Getting started with the MsrcSecurityUpdates module can be done like this:
 ```PowerShell
