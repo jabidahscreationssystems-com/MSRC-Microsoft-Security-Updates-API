@@ -1,0 +1,46 @@
+{
+  "name": "MSRC Security Updates API Development",
+  "image": "mcr.microsoft.com/devcontainers/powershell:latest",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/dotnet:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/azure-cli:1": {}
+  },
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.powershell",
+        "github.copilot",
+        "github.copilot-chat",
+        "eamodio.gitlens",
+        "ms-azuretools.vscode-docker",
+        "humao.rest-client",
+        "42crunch.vscode-openapi",
+        "arjun.swagger-viewer",
+        "github.vscode-pull-request-github",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "powershell.codeFormatting.preset": "OTBS",
+        "powershell.scriptAnalysis.enable": true,
+        "terminal.integrated.defaultProfile.linux": "pwsh"
+      }
+    }
+  },
+  
+  "postCreateCommand": "pwsh -Command 'Install-Module -Name Pester, PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck'",
+  
+  "remoteUser": "vscode",
+  
+  "mounts": [
+    "source=${localEnv:HOME}/.azure,target=/home/vscode/.azure,type=bind,consistency=cached"
+  ],
+  
+  "forwardPorts": [],
+  
+  "portsAttributes": {}
+}

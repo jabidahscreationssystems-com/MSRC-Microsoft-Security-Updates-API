@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "MSRC Security Updates API",
+    "description": "Collection for testing the Microsoft Security Response Center Security Updates API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "api-key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{api_key}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://api.msrc.microsoft.com",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get All Security Updates",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/cvrf/v2.0/updates",
+          "host": ["{{base_url}}"],
+          "path": ["cvrf", "v2.0", "updates"]
+        },
+        "description": "Retrieves all security update IDs"
+      }
+    },
+    {
+      "name": "Get Security Update by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/cvrf/v2.0/cvrf/:id",
+          "host": ["{{base_url}}"],
+          "path": ["cvrf", "v2.0", "cvrf", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "2024-Jan",
+              "description": "Update ID (e.g., 2024-Jan)"
+            }
+          ]
+        },
+        "description": "Retrieves a specific CVRF document by ID"
+      }
+    },
+    {
+      "name": "Get Updates by CVE",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/cvrf/v2.0/updates?$filter=vulnerability/cve eq ':cve'",
+          "host": ["{{base_url}}"],
+          "path": ["cvrf", "v2.0", "updates"],
+          "query": [
+            {
+              "key": "$filter",
+              "value": "vulnerability/cve eq ':cve'"
+            }
+          ],
+          "variable": [
+            {
+              "key": "cve",
+              "value": "CVE-2024-0001",
+              "description": "CVE ID"
+            }
+          ]
+        },
+        "description": "Find security updates containing a specific CVE"
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API/discussions
+    about: Ask questions and discuss with the community
+  - name: 📚 Microsoft Security Update Guide
+    url: https://msrc.microsoft.com/update-guide
+    about: Official Microsoft Security Update Guide
+  - name: 🔐 Security Vulnerabilities
+    url: https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API/security/advisories
+    about: Report security vulnerabilities privately
